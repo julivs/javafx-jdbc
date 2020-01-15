@@ -15,5 +15,14 @@ public class DepartmentService {
 		return dd.findAll();
 		
 	}
+	
+	public void saveOrUpdate(Department department) {
+		if (department.getId() == null) {
+			dd.insert(department);
+		}
+		else {
+			dd.update(department);
+		}
+	}
 
 }
