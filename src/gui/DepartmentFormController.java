@@ -2,11 +2,13 @@ package gui;
 
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
+import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
 import javafx.event.ActionEvent;
@@ -15,7 +17,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
+import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -67,8 +71,11 @@ public class DepartmentFormController implements Initializable {
 			notifyDCL();
 			Utils.currentStage(event).close();
 		}
-		catch(Exception e) {
-			throw new DbException(e.getMessage());
+		catch(ValidationException e) {
+			setErrorMessages(e.getErrors());
+		}
+		catch(DbException e) {
+			Alerts.showAlert("Error saving department", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
 
@@ -79,15 +86,24 @@ public class DepartmentFormController implements Initializable {
 	}
 
 	private Department getFormData() {
+		
+		ValidationException ve = new ValidationException("Validation exception");
+		
 		Integer id = Utils.tryToParseInt(textId.getText());
+		
+		if (textName.getText() == null || textName.getText().trim().equals("")) {
+			ve.addError("name", "Name can't be empty.");
+		}
 		String name = textName.getText();
+		
+		if (ve.getErrors().size() > 0) throw ve;
 		
 		return new Department(id, name);
 	}
 
 	@FXML
-	public void onbtCancelAction() {
-
+	public void onbtCancelAction(ActionEvent event) {
+		Utils.currentStage(event).close();
 	}
 
 	@Override
@@ -105,6 +121,15 @@ public class DepartmentFormController implements Initializable {
 		if (entity != null) {
 			textId.setText(String.valueOf(entity.getId()));
 			textName.setText(entity.getName());
+		}
+		
+	}
+	
+	private void setErrorMessages(Map<String, String> errors) {
+		Set<String> errorsKey = errors.keySet();
+		
+		if (errorsKey.contains("name")) {
+			labelInform.setText(errors.get("name"));
 		}
 		
 	}

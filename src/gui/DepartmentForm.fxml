@@ -33,7 +33,7 @@
             </HBox>
             <TextField fx:id="textId" editable="false" GridPane.columnIndex="1" />
             <TextField fx:id="textName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label fx:id="labelInform" textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="1" />
          </children>
       </GridPane>
    </children>
