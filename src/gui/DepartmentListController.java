@@ -36,7 +36,7 @@ public class DepartmentListController implements Initializable {
 		System.out.println("BtNew");
 	}
 
-	private void setDepartmentService(DepartmentService ds) {
+	public void setDepartmentService(DepartmentService ds) {
 		this.ds = ds;
 	}
 
@@ -51,10 +51,6 @@ public class DepartmentListController implements Initializable {
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewDepartment.prefHeightProperty().bind(stage.heightProperty());
-
-		setDepartmentService(new DepartmentService());
-		
-		updateTableView();
 
 	}
 
