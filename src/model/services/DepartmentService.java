@@ -24,5 +24,11 @@ public class DepartmentService {
 			dd.update(department);
 		}
 	}
+	
+	public void delete(Department department) {
+		if (department.getId() != null) {
+			dd.deleteById(department.getId());
+		}
+	}
 
 }

@@ -14,22 +14,22 @@ import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import model.entities.Department;
 import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
-	
-	private Set<DataChangeListener> DCLList = new HashSet<>();
-	
-	private Department entity;
-	
-	private DepartmentService ds;
 
+	private Set<DataChangeListener> DCLList = new HashSet<>();
+
+	private Department entity;
+
+	private DepartmentService ds;
+	
 	@FXML
 	private TextField textId;
 
@@ -48,7 +48,7 @@ public class DepartmentFormController implements Initializable {
 	public void setEntity(Department entity) {
 		this.entity = entity;
 	}
-	
+
 	public void setDs(DepartmentService ds) {
 		this.ds = ds;
 	}
@@ -70,11 +70,9 @@ public class DepartmentFormController implements Initializable {
 			ds.saveOrUpdate(entity);
 			notifyDCL();
 			Utils.currentStage(event).close();
-		}
-		catch(ValidationException e) {
+		} catch (ValidationException e) {
 			setErrorMessages(e.getErrors());
-		}
-		catch(DbException e) {
+		} catch (DbException e) {
 			Alerts.showAlert("Error saving department", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -86,18 +84,19 @@ public class DepartmentFormController implements Initializable {
 	}
 
 	private Department getFormData() {
-		
+
 		ValidationException ve = new ValidationException("Validation exception");
-		
+
 		Integer id = Utils.tryToParseInt(textId.getText());
-		
+
 		if (textName.getText() == null || textName.getText().trim().equals("")) {
 			ve.addError("name", "Name can't be empty.");
 		}
 		String name = textName.getText();
-		
-		if (ve.getErrors().size() > 0) throw ve;
-		
+
+		if (ve.getErrors().size() > 0)
+			throw ve;
+
 		return new Department(id, name);
 	}
 
@@ -109,7 +108,7 @@ public class DepartmentFormController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		initializeNodes();
-		
+
 	}
 
 	private void initializeNodes() {
@@ -122,16 +121,16 @@ public class DepartmentFormController implements Initializable {
 			textId.setText(String.valueOf(entity.getId()));
 			textName.setText(entity.getName());
 		}
-		
+
 	}
-	
+
 	private void setErrorMessages(Map<String, String> errors) {
 		Set<String> errorsKey = errors.keySet();
-		
+
 		if (errorsKey.contains("name")) {
 			labelInform.setText(errors.get("name"));
 		}
-		
+
 	}
 
 
